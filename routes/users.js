@@ -31,7 +31,7 @@ router.get('/:user_id/events/:event_id/destroy', function (req, res) {
     models.Event.find({
       where: { id: req.param('event_id') }
     }).success(function(event) {
-      task.setUser(null).success(function() {
+      event.setUser(null).success(function() {
         event.destroy().success(function() {
           res.redirect('/');
         });
