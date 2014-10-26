@@ -8,3 +8,24 @@ block content
   form(action='/users/create', method='post')
     input(type='text', name='username')
     input(type='submit')
+
+  h2 Users
+
+  ul
+  each user in users
+    li
+      = user.username
+      ul
+        li
+          | Creating a new event:
+          form(action="/users/" + user.id + "/events/create", method="post", style="display: inline")
+            input(type="text", name="title")
+            input(type="submit")
+
+        each event in user.Events
+          li
+            = event.title
+            | &nbsp;
+            | (
+            a(href="/users/" + user.id + "/events/" + event.id + "/destroy") Destroy
+            | )
