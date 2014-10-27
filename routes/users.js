@@ -1,44 +1,9 @@
-var models  = require('../models');
 var express = require('express');
 var router = express.Router();
 
-router.post('/create', function(req, res) {
-  models.User.create({
-    username: req.param('username')
-  }).success(function() {
-    res.redirect('/');
-  });
+/* GET users listing. */
+router.get('/', function(req, res) {
+  res.send('respond with a resource');
 });
-
-router.post('/:user_id/events/create', function (req, res) {
-  models.User.find({
-    where: { id: req.param('user_id') }
-  }).success(function(user) {
-    models.Event.create({
-      title: req.param('title')
-    }).success(function(title) {
-      title.setUser(user).success(function() {
-        res.redirect('/');
-      });
-    });
-  });
-});
-
-router.get('/:user_id/events/:event_id/destroy', function (req, res) {
-  models.User.find({
-    where: { id: req.param('user_id') }
-  }).success(function(user) {
-    models.Event.find({
-      where: { id: req.param('event_id') }
-    }).success(function(event) {
-      event.setUser(null).success(function() {
-        event.destroy().success(function() {
-          res.redirect('/');
-        });
-      });
-    });
-  });
-});
-
 
 module.exports = router;
