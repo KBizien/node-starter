@@ -1,14 +1,18 @@
 var passport = require('passport');
 
+// Serialize sessions
 passport.serializeUser(function(user, done) {
   done(null, user.id);
 });
 
 passport.deserializeUser(function(id, done) {
-  User.findById(id, function(err, user) {
-    done(err, user);
+  db.User.find({where: {id: id}}).success(function(user){
+    done(null, user);
+  }).error(function(err){
+    done(err, null);
   });
 });
 
+
 // Bootstrap local config
-require('./strategies/local')();
+require('./strategies/local');
