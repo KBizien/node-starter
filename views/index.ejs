@@ -1,0 +1,21 @@
+<!-- views/index.ejs -->
+<!doctype html>
+<html>
+  <head>
+      <title>Andzup</title>
+  </head>
+  <body>
+    <div>
+      <div>
+        <!-- show any messages that come back with authentication -->
+        <% if (message.length > 0) { %>
+          <div><%= message %></div>
+        <% } %>
+        <h1><span></span>Andzup</h1>
+        <p>Login or Register with:</p>
+          <a href="/login"><span></span>Local Login</a>
+          <a href="/signup"><span></span>Local Signup</a>
+        </div>
+    </div>
+  </body>
+</html>
