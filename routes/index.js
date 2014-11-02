@@ -1,11 +1,7 @@
-//var express = require('express');
-//var router = express.Router();
-//var passport = require('passport');
-
 module.exports = function(app, passport) {
 
   // =====================================
-  // HOME PAGE (with login links) ========
+  // HOME PAGE ===========================
   // =====================================
   app.get('/', function(req, res) {
     var success = req.flash('success');
@@ -14,7 +10,7 @@ module.exports = function(app, passport) {
   });
 
   // =====================================
-  // LOGIN ===============================
+  // LOGIN PAGE ==========================
   // =====================================
   // show the login form
   app.get('/login', function(req, res) {
@@ -34,7 +30,7 @@ module.exports = function(app, passport) {
   );
 
   // =====================================
-  // SIGNUP ==============================
+  // SIGNUP PAGE =========================
   // =====================================
   // show the signup form
   app.get('/signup', function(req, res) {

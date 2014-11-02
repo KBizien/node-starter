@@ -1,5 +1,6 @@
-// set up ======================================================================
-// get all the tools we need
+// =========================================
+// SET UP ==================================
+// =========================================
 var express = require('express');
 var app = express();
 var init = require('./bin/www'); // contains database configuation with orm sequelize.js
@@ -13,13 +14,9 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
 
-//var routes = require('./routes/index');
-//var users = require('./routes/users');
-
-// Bootstrap passport config
-require('./config/passport')(passport); // pass passport for configuration
-
-// set up our express application
+// =========================================
+// EXPRESS REQUIRED ========================
+// =========================================
 // uncomment after placing your favicon in /public
 //app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(logger('dev'));
@@ -28,11 +25,14 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs'); // set up ejs for templating
+// =========================================
+// BOOTSTRAP PASSPORT CONFIG ===============
+// =========================================
+require('./config/passport')(passport); // pass passport for configuration
 
-// required for passport
+// =========================================
+// PASSPORT REQUIRED =======================
+// =========================================
 app.use(session({
   secret: 'andzup',
   cookie: { secure: true },
@@ -43,12 +43,20 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
 
-// routes ======================================================================
-//app.use('/', routes);
-//app.use('/users', users);
-require('./routes/index.js')(app, passport); // load our routes and pass in our app and fully configured passport
+// =========================================
+// ROUTES ==================================
+// =========================================
+require('./routes/index.js')(app, passport);
 
+// =========================================
+// VIEWS ===================================
+// =========================================
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs'); // set up ejs for templating
 
+// =========================================
+// 404 & ERROR =============================
+// =========================================
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
     var err = new Error('Not Found');
