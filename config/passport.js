@@ -1,12 +1,12 @@
 // load all the things we need
 var LocalStrategy   = require('passport-local').Strategy;
-
 // load up the user model
 var models = require('../models');
 var User = models.sequelize.import('../../../models/user');
 
 // expose this function to our app using module.exports
 module.exports = function(passport) {
+
   // =========================================================================
   // passport session setup ==================================================
   // =========================================================================
@@ -30,6 +30,7 @@ module.exports = function(passport) {
   // =========================================================================
   // LOCAL LOGIN =============================================================
   // =========================================================================
+
   passport.use('local-login', new LocalStrategy({
       usernameField : 'username',
       passwordField : 'password',
@@ -43,7 +44,7 @@ module.exports = function(passport) {
         if (!user) {
           console.log('Unknown user');
           return done(null, false, req.flash('error', 'Unknown user'));
-        } else if (password != user.password) {
+        } else if (!User.build().validPassword(password, user)) {
           console.log('Invalid password');
           return done(null, false, req.flash('error', 'Invalid password'));
         } else {
@@ -59,6 +60,7 @@ module.exports = function(passport) {
   // =========================================================================
   // LOCAL SIGNUP ============================================================
   // =========================================================================
+
   passport.use('local-signup', new LocalStrategy({
       usernameField : 'username',
       passwordField : 'password',
@@ -81,7 +83,7 @@ module.exports = function(passport) {
               User
                 .create({
                   username: username,
-                  password: password
+                  password: User.build().generateHash(password)
                 })
                 .complete(function(err, user) {
                   if (err)
