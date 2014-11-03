@@ -35,6 +35,7 @@ require('./config/passport')(passport); // pass passport for configuration
 // =========================================
 app.use(session({
   secret: 'andzup',
+  cookie: { maxAge: 365 * 24 * 60 * 60 * 1000 },
   resave: true,
   saveUninitialized: true
 }));
