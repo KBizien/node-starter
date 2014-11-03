@@ -4,9 +4,7 @@ module.exports = function(app, passport) {
   // HOME PAGE ===========================
   // =====================================
   app.get('/', function(req, res) {
-    var success = req.flash('success');
-    console.log(success);
-    res.render('index.ejs', { message: success });
+    res.render('index.ejs');
   });
 
   // =====================================
@@ -22,7 +20,7 @@ module.exports = function(app, passport) {
   // process the login form
   app.post('/login',
     passport.authenticate('local-login', {
-      successRedirect: '/',
+      successRedirect: '/profile',
       failureRedirect: '/login',
       failureFlash: true,
       successFlash: true
@@ -40,10 +38,29 @@ module.exports = function(app, passport) {
 
   // process the signup form
   app.post('/signup', passport.authenticate('local-signup', {
-    successRedirect : '/',
+    successRedirect : '/profile',
     failureRedirect : '/signup',
     failureFlash : true
   }));
+
+  // =====================================
+  // PROFILE SECTION =====================
+  // =====================================
+  // we will want this protected so you have to be logged in to visit
+  // we will use route middleware to verify this (the isLoggedIn function)
+  app.get('/profile', isLoggedIn, function(req, res) {
+      res.render('profile.ejs', {
+          user : req.user // get the user out of session and pass to template
+      });
+  });
+
+  // =====================================
+  // LOGOUT ==============================
+  // =====================================
+  app.get('/logout', function(req, res) {
+    req.logout();
+    res.redirect('/');
+  });
 };
 
 //route middleware to make sure a user is logged in

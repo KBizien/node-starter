@@ -35,7 +35,6 @@ require('./config/passport')(passport); // pass passport for configuration
 // =========================================
 app.use(session({
   secret: 'andzup',
-  cookie: { secure: true },
   resave: true,
   saveUninitialized: true
 }));

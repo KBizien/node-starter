@@ -20,7 +20,7 @@ module.exports = function(passport) {
 
   // used to deserialize the user
   passport.deserializeUser(function(id, done) {
-    db.User.find({where: {id: id}}).success(function(user){
+    User.find({where: {id: id}}).success(function(user){
       done(null, user);
     }).error(function(err){
       done(err, null);
@@ -49,7 +49,7 @@ module.exports = function(passport) {
           return done(null, false, req.flash('error', 'Invalid password'));
         } else {
           console.log('Welcome '+ user.username);
-          return done(null, user, req.flash('success', 'Welcome !'));
+          return done(null, user);
         }
       }).error(function(err){
         return done(err);

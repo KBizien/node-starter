@@ -1,0 +1,31 @@
+<!-- views/profile.ejs -->
+<!doctype html>
+<html>
+  <head>
+      <title>Profile</title>
+  </head>
+  <body>
+    <div>
+      <div>
+        <h1><span></span>Profile Page</h1>
+        <a href="/logout">Logout</a>
+      </div>
+
+      <div>
+        <!-- LOCAL INFORMATION -->
+        <div>
+          <div>
+            <h3><span></span> Local</h3>
+            <p>
+              <strong>username</strong>: <%= user.username %><br>
+              <strong>password</strong>: <%= user.password %>
+            </p>
+            <p>Go <a href="/">home</a>.</p>
+            <a href="/login"><span></span>Local Login</a>
+            <a href="/signup"><span></span>Local Signup</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
