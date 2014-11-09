@@ -2,6 +2,7 @@
 var LocalStrategy   = require('passport-local').Strategy;
 var FacebookStrategy = require('passport-facebook').Strategy;
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+var TwitterStrategy  = require('passport-twitter').Strategy;
 // load up the user model
 var Sequelize = require("sequelize");
 var models = require('../models');
@@ -142,7 +143,7 @@ module.exports = function(passport) {
   }));
 
   // =========================================================================
-  // GOOGLE ==================================================================
+  // GOOGLE SIGNUP/SIGNIN ====================================================
   // =========================================================================
   passport.use(new GoogleStrategy({
     clientID        : configAuth.googleAuth.clientID,
@@ -165,6 +166,40 @@ module.exports = function(passport) {
               googleName: profile.displayName,
               googleId: profile.id, // set the users google id
               googleToken: token // we will save the token that google provides to the user
+            })
+            .complete(function(err, user) {
+              if (err)
+                throw err;
+              return done(null, user);
+            })
+        }
+      });
+    });
+  }));
+
+  // =========================================================================
+  // TWITTER SIGNUP/SIGNIN ===================================================
+  // =========================================================================
+  passport.use(new TwitterStrategy({
+    consumerKey     : configAuth.twitterAuth.consumerKey,
+    consumerSecret  : configAuth.twitterAuth.consumerSecret,
+    callbackURL     : configAuth.twitterAuth.callbackURL
+  },
+  function(token, tokenSecret, profile, done) {
+  // make the code asynchronous
+  // User.findOne won't fire until we have all our data back from Twitter
+    process.nextTick(function() {
+      User.findOne({where: { twitterId : profile.id }}).success(function(user) {
+        if (user) {
+          return done(null, user); // user found, return that user
+        } else {
+          // if the user isnt in our database, create a new user
+          User
+            .create({
+              twitterUsername: profile.username, // google can return multiple emails so we'll take the first
+              twitterDisplayName: profile.displayName,
+              twitterId: profile.id, // set the users google id
+              twitterToken: token // we will save the token that google provides to the user
             })
             .complete(function(err, user) {
               if (err)

@@ -49,6 +49,24 @@
           <% } %>
         </div>
       </div>
+      <!-- TWITTER INFORMATION -->
+      <div>
+        <div>
+          <h3>Twitter</h3>
+          <% if (user.twitterToken) { %>
+            <p>
+              <strong>username</strong>: <%= user.twitterUsername %><br>
+              <strong>displayName</strong>: <%= user.twitterDisplayName %>
+              <strong>id</strong>: <%= user.twitterId %><br>
+              <strong>token</strong>: <%= user.twitterToken %><br>
+            </p>
+          <% } %>
+        </div>
+      </div>
+      <a href="/">Home</a><br>
+      <a href="/login">Local Login</a><br>
+      <a href="/signup">Local Signup</a><br>
+      <a href="/profile">Profile</a>
     </div>
   </div>
 <% include ../partials/footer %>
