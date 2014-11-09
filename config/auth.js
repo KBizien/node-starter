@@ -1,4 +1,3 @@
-// expose our config directly to our application using module.exports
 module.exports = {
 
     'facebookAuth' : {
@@ -14,8 +13,8 @@ module.exports = {
     },
 
     'googleAuth' : {
-        'clientID'      : 'your-secret-clientID-here',
-        'clientSecret'  : 'your-client-secret-here',
+        'clientID'      : '652771640981-jgooj48ua83i7rj68uhqc67bplqov35o.apps.googleusercontent.com',
+        'clientSecret'  : '9sJaFbbR9I5A8T0hAA4MnG4N',
         'callbackURL'   : 'http://localhost:3000/auth/google/callback'
     }
 

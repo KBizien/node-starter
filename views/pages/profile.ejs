@@ -1,7 +1,7 @@
 <% include ../partials/head %>
   <div>
     <div>
-      <h1><span></span>Profile Page</h1>
+      <h1>Profile Page</h1>
       <a href="/logout">Logout</a>
     </div>
 
@@ -9,22 +9,22 @@
       <!-- LOCAL INFORMATION -->
       <div>
         <div>
-          <h3><span></span> Local</h3>
+          <h3>Local</h3>
           <% if (user.username) { %>
           <p>
             <strong>username</strong>: <%= user.username %><br>
             <strong>password</strong>: <%= user.password %>
           </p>
           <p>Go <a href="/">home</a>.</p>
-          <a href="/login"><span></span>Local Login</a>
-          <a href="/signup"><span></span>Local Signup</a>
+          <a href="/login">Local Login</a>
+          <a href="/signup">Local Signup</a>
           <% } %>
         </div>
       </div>
       <!-- FACEBOOK INFORMATION -->
       <div>
         <div>
-          <h3><span></span>Facebook</h3>
+          <h3>Facebook</h3>
           <% if (user.facebookToken) { %>
           <p>
             <strong>name</strong>: <%= user.facebookName %><br>
@@ -32,6 +32,20 @@
             <strong>id</strong>: <%= user.facebookId %><br>
             <strong>token</strong>: <%= user.facebookToken %><br>
           </p>
+          <% } %>
+        </div>
+      </div>
+      <!-- GOOGLE INFORMATION -->
+      <div>
+        <div>
+          <h3>Google</h3>
+          <% if (user.googleToken) { %>
+            <p>
+              <strong>name</strong>: <%= user.googleName %><br>
+              <strong>email</strong>: <%= user.googleEmail %><br>
+              <strong>id</strong>: <%= user.googleId %><br>
+              <strong>token</strong>: <%= user.googleToken %><br>
+            </p>
           <% } %>
         </div>
       </div>

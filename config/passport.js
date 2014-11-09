@@ -1,6 +1,7 @@
-// load all the things we need
+// load strategies modules
 var LocalStrategy   = require('passport-local').Strategy;
 var FacebookStrategy = require('passport-facebook').Strategy;
+var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 // load up the user model
 var Sequelize = require("sequelize");
 var models = require('../models');
@@ -129,6 +130,41 @@ module.exports = function(passport) {
               facebookName: profile.name.givenName + ' ' + profile.name.familyName,
               facebookId: profile.id, // set the users facebook id
               facebookToken: token // // we will save the token that facebook provides to the user
+            })
+            .complete(function(err, user) {
+              if (err)
+                throw err;
+              return done(null, user);
+            })
+        }
+      });
+    });
+  }));
+
+  // =========================================================================
+  // GOOGLE ==================================================================
+  // =========================================================================
+  passport.use(new GoogleStrategy({
+    clientID        : configAuth.googleAuth.clientID,
+    clientSecret    : configAuth.googleAuth.clientSecret,
+    callbackURL     : configAuth.googleAuth.callbackURL,
+  },
+  function(token, refreshToken, profile, done) {
+    // make the code asynchronous
+    // User.findOne won't fire until we have all our data back from Google
+    process.nextTick(function() {
+      // try to find the user based on their google id
+      User.findOne({where: { googleId : profile.id }}).success(function(user) {
+        if (user) {
+          return done(null, user); // user found, return that user
+        } else {
+          // if the user isnt in our database, create a new user
+          User
+            .create({
+              googleEmail: profile.emails[0].value, // google can return multiple emails so we'll take the first
+              googleName: profile.displayName,
+              googleId: profile.id, // set the users google id
+              googleToken: token // we will save the token that google provides to the user
             })
             .complete(function(err, user) {
               if (err)
