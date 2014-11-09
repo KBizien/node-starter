@@ -24,7 +24,7 @@ module.exports = {
     migration.addColumn(
       'Users',
       'facebookId',
-      DataTypes.INTEGER
+      DataTypes.STRING
     ).done(done);
 
     migration.addColumn(
@@ -35,8 +35,20 @@ module.exports = {
 
     migration.addColumn(
       'Users',
+      'facebookEmail',
+      DataTypes.STRING
+    ).done(done);
+
+    migration.addColumn(
+      'Users',
+      'facebookName',
+      DataTypes.STRING
+    ).done(done);
+
+    migration.addColumn(
+      'Users',
       'twitterId',
-      DataTypes.INTEGER
+      DataTypes.STRING
     ).done(done);
 
     migration.addColumn(
@@ -47,8 +59,20 @@ module.exports = {
 
     migration.addColumn(
       'Users',
+      'twitterDisplayName',
+      DataTypes.STRING
+    ).done(done);
+
+    migration.addColumn(
+      'Users',
+      'twitterUsername',
+      DataTypes.STRING
+    ).done(done);
+
+    migration.addColumn(
+      'Users',
       'googleId',
-      DataTypes.INTEGER
+      DataTypes.STRING
     ).done(done);
 
     migration.addColumn(
@@ -57,6 +81,18 @@ module.exports = {
       DataTypes.STRING
     )
     .done(done);
+
+    migration.addColumn(
+      'Users',
+      'googleEmail',
+      DataTypes.STRING
+    ).done(done);
+
+    migration.addColumn(
+      'Users',
+      'googleName',
+      DataTypes.STRING
+    ).done(done);
   },
 
   down: function(migration, DataTypes, done) {
@@ -70,10 +106,16 @@ module.exports = {
     ).done(done);
     migration.removeColumn('Users', 'email').done(done);
     migration.removeColumn('Users', 'facebookId').done(done);
-    migration.removeColumn('Users', 'facebookToken').done(dne);
+    migration.removeColumn('Users', 'facebookToken').done(done);
+    migration.removeColumn('Users', 'facebookEmail').done(done);
+    migration.removeColumn('Users', 'facebookName').done(done);
     migration.removeColumn('Users', 'twitterId').done(done);
-    migration.removeColumn('Users', 'twitterToken').done(dne);
+    migration.removeColumn('Users', 'twitterToken').done(done);
+    migration.removeColumn('Users', 'twitterDisplayName').done(done);
+    migration.removeColumn('Users', 'twitterUsername').done(done);
     migration.removeColumn('Users', 'googleId').done(done);
     migration.removeColumn('Users', 'googleToken').done(done);
+    migration.removeColumn('Users', 'googleEmail').done(done);
+    migration.removeColumn('Users', 'googleName').done(done);
   }
 };

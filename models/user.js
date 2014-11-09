@@ -10,10 +10,16 @@ module.exports = function(sequelize, DataTypes) {
     password: DataTypes.STRING,
     facebookId: DataTypes.INTEGER,
     facebookToken: DataTypes.STRING,
+    facebookEmail: DataTypes.STRING,
+    facebookName: DataTypes.STRING,
     twitterId: DataTypes.INTEGER,
     twitterToken: DataTypes.STRING,
+    twitterDisplayName: DataTypes.STRING,
+    twitterUsername: DataTypes.STRING,
     googleId: DataTypes.INTEGER,
-    googleToken: DataTypes.STRING
+    googleToken: DataTypes.STRING,
+    googleEmail: DataTypes.STRING,
+    googleName: DataTypes.STRING
   }, {
     classMethods: {
       associate: function(models) {
