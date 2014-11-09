@@ -10,6 +10,7 @@
       <div>
         <div>
           <h3><span></span> Local</h3>
+          <% if (user.username) { %>
           <p>
             <strong>username</strong>: <%= user.username %><br>
             <strong>password</strong>: <%= user.password %>
@@ -17,18 +18,21 @@
           <p>Go <a href="/">home</a>.</p>
           <a href="/login"><span></span>Local Login</a>
           <a href="/signup"><span></span>Local Signup</a>
+          <% } %>
         </div>
       </div>
       <!-- FACEBOOK INFORMATION -->
       <div>
         <div>
           <h3><span></span>Facebook</h3>
+          <% if (user.facebookToken) { %>
           <p>
-            <strong>name</strong>: <%= user.username %>
-            <strong>email</strong>: <%= user.email %><br>
+            <strong>name</strong>: <%= user.facebookName %><br>
+            <strong>email</strong>: <%= user.facebookEmail %><br>
             <strong>id</strong>: <%= user.facebookId %><br>
             <strong>token</strong>: <%= user.facebookToken %><br>
           </p>
+          <% } %>
         </div>
       </div>
     </div>

@@ -2,6 +2,7 @@
 var LocalStrategy   = require('passport-local').Strategy;
 var FacebookStrategy = require('passport-facebook').Strategy;
 // load up the user model
+var Sequelize = require("sequelize");
 var models = require('../models');
 var User = models.sequelize.import('../../../models/user');
 
@@ -76,13 +77,13 @@ module.exports = function(passport) {
       process.nextTick(function() {
         // find a user whose email is the same as the forms email
         // we are checking to see if the user trying to login already exists
-        User.findOne({ where:{ username:  username }}).success(function(user) {
+        User.findOne({ where: Sequelize.or({ username:  username }, { email: req.body.email })}).success(function(user) {
             // check to see if theres already a user with that email
             if (user) {
-                console.log('That username is already taken');
-                return done(null, false, req.flash('error', 'That username is already taken.'));
+                console.log('That email or username have already an account');
+                return done(null, false, req.flash('error', 'That email or username have already an account'));
             } else {
-              // if there is no user with that username
+              // if there is no user with that email & username
               // save the user
               User
                 .create({
@@ -101,7 +102,7 @@ module.exports = function(passport) {
   }));
 
   // =========================================================================
-  // FACEBOOK SIGNIN ============================================================
+  // FACEBOOK SIGNUP/SIGNIN ============================================================
   // =========================================================================
 
   passport.use(new FacebookStrategy({
@@ -124,8 +125,8 @@ module.exports = function(passport) {
         } else {
           User
             .create({
-              email: profile.emails[0].value, // facebook can return multiple emails so we'll take the first
-              username: profile.username,
+              facebookEmail: profile.emails[0].value, // facebook can return multiple emails so we'll take the first
+              facebookName: profile.name.givenName + ' ' + profile.name.familyName,
               facebookId: profile.id, // set the users facebook id
               facebookToken: token // // we will save the token that facebook provides to the user
             })
