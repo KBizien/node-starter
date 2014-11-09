@@ -19,6 +19,18 @@
           <a href="/signup"><span></span>Local Signup</a>
         </div>
       </div>
+      <!-- FACEBOOK INFORMATION -->
+      <div>
+        <div>
+          <h3><span></span>Facebook</h3>
+          <p>
+            <strong>name</strong>: <%= user.username %>
+            <strong>email</strong>: <%= user.email %><br>
+            <strong>id</strong>: <%= user.facebookId %><br>
+            <strong>token</strong>: <%= user.facebookToken %><br>
+          </p>
+        </div>
+      </div>
     </div>
   </div>
 <% include ../partials/footer %>

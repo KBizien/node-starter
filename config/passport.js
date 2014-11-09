@@ -1,8 +1,12 @@
 // load all the things we need
 var LocalStrategy   = require('passport-local').Strategy;
+var FacebookStrategy = require('passport-facebook').Strategy;
 // load up the user model
 var models = require('../models');
 var User = models.sequelize.import('../../../models/user');
+
+// load the auth variables
+var configAuth = require('./auth');
 
 // expose this function to our app using module.exports
 module.exports = function(passport) {
@@ -94,5 +98,44 @@ module.exports = function(passport) {
             }
         });
       });
+  }));
+
+  // =========================================================================
+  // FACEBOOK SIGNIN ============================================================
+  // =========================================================================
+
+  passport.use(new FacebookStrategy({
+    // pull in our app id and secret from our auth.js file
+    clientID        : configAuth.facebookAuth.clientID,
+    clientSecret    : configAuth.facebookAuth.clientSecret,
+    callbackURL     : configAuth.facebookAuth.callbackURL
+  },
+
+  // facebook will send back the token and profile
+  function(token, refreshToken, profile, done) {
+
+    // asynchronous
+    process.nextTick(function() {
+
+      // find the user in the database based on their facebook id
+      User.findOne({where: { facebookId : profile.id }}).success(function(user) {
+        if (user) {
+          return done(null, user); // user found, return that user
+        } else {
+          User
+            .create({
+              email: profile.emails[0].value; // facebook can return multiple emails so we'll take the first
+              username: profile.username,
+              facebookId: profile.id, // set the users facebook id
+              facebookToken: token // // we will save the token that facebook provides to the user
+            })
+            .complete(function(err, user) {
+              if (err)
+                throw err;
+              return done(null, user);
+            })
+        }
+      });
+    });
   }));
 };
