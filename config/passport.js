@@ -124,7 +124,7 @@ module.exports = function(passport) {
         } else {
           User
             .create({
-              email: profile.emails[0].value; // facebook can return multiple emails so we'll take the first
+              email: profile.emails[0].value, // facebook can return multiple emails so we'll take the first
               username: profile.username,
               facebookId: profile.id, // set the users facebook id
               facebookToken: token // // we will save the token that facebook provides to the user
