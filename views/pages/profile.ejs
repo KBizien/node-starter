@@ -11,13 +11,14 @@
         <div>
           <h3>Local</h3>
           <% if (user.username) { %>
-          <p>
-            <strong>username</strong>: <%= user.username %><br>
-            <strong>password</strong>: <%= user.password %>
-          </p>
-          <p>Go <a href="/">home</a>.</p>
-          <a href="/login">Local Login</a>
-          <a href="/signup">Local Signup</a>
+            <p>
+              <strong>username</strong>: <%= user.username %><br>
+              <strong>email</strong>: <%= user.email %><br>
+              <strong>password</strong>: <%= user.password %>
+            </p>
+            <a href="/unlink/local">Unlink</a>
+          <% } else { %>
+            <a href="/connect/local">Connect Local</a>
           <% } %>
         </div>
       </div>
@@ -26,12 +27,15 @@
         <div>
           <h3>Facebook</h3>
           <% if (user.facebookToken) { %>
-          <p>
-            <strong>name</strong>: <%= user.facebookName %><br>
-            <strong>email</strong>: <%= user.facebookEmail %><br>
-            <strong>id</strong>: <%= user.facebookId %><br>
-            <strong>token</strong>: <%= user.facebookToken %><br>
-          </p>
+            <p>
+              <strong>name</strong>: <%= user.facebookName %><br>
+              <strong>email</strong>: <%= user.facebookEmail %><br>
+              <strong>id</strong>: <%= user.facebookId %><br>
+              <strong>token</strong>: <%= user.facebookToken %><br>
+            </p>
+            <a href="/unlink/facebook">Unlink</a>
+          <% } else { %>
+            <a href="/connect/facebook">Connect Facebook</a>
           <% } %>
         </div>
       </div>
@@ -46,6 +50,9 @@
               <strong>id</strong>: <%= user.googleId %><br>
               <strong>token</strong>: <%= user.googleToken %><br>
             </p>
+            <a href="/unlink/google" class="btn btn-danger">Unlink</a>
+          <% } else { %>
+            <a href="/connect/google" class="btn btn-danger">Connect Google</a>
           <% } %>
         </div>
       </div>
@@ -60,9 +67,13 @@
               <strong>id</strong>: <%= user.twitterId %><br>
               <strong>token</strong>: <%= user.twitterToken %><br>
             </p>
+            <a href="/unlink/twitter">Unlink</a>
+          <% } else { %>
+            <a href="/connect/twitter">Connect Twitter</a>
           <% } %>
         </div>
       </div>
+      <p>------------------------</p>
       <a href="/">Home</a><br>
       <a href="/login">Local Login</a><br>
       <a href="/signup">Local Signup</a><br>

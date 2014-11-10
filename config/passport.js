@@ -79,11 +79,27 @@ module.exports = function(passport) {
       process.nextTick(function() {
         // find a user whose email is the same as the forms email
         // we are checking to see if the user trying to login already exists
-        User.findOne({ where: Sequelize.or({ username:  username }, { email: req.body.email })}).success(function(user) {
+        User.findOne({ where: Sequelize.or({ username:  username }, { email: req.body.email })}).success(function(existingUser) {
             // check to see if theres already a user with that email
-            if (user) {
+            if (existingUser) {
                 console.log('That email or username have already an account');
                 return done(null, false, req.flash('error', 'That email or username have already an account'));
+            }
+
+            // If we're logged in, we're connecting a new local account.
+            if(req.user) {
+              var user = req.user;
+              user
+                .updateAttributes({
+                  username: username,
+                  email: req.body.email,
+                  password: User.build().generateHash(password)
+                })
+                .complete(function(err, user) {
+                  if (err)
+                    throw err;
+                  return done(null, user);
+                })
             } else {
               // if there is no user with that email & username
               // save the user
@@ -111,34 +127,52 @@ module.exports = function(passport) {
     // pull in our app id and secret from our auth.js file
     clientID        : configAuth.facebookAuth.clientID,
     clientSecret    : configAuth.facebookAuth.clientSecret,
-    callbackURL     : configAuth.facebookAuth.callbackURL
+    callbackURL     : configAuth.facebookAuth.callbackURL,
+    passReqToCallback : true // allows us to pass in the req from our route (lets us check if a user is logged in or not)
   },
 
   // facebook will send back the token and profile
-  function(token, refreshToken, profile, done) {
+  function(req, token, refreshToken, profile, done) {
 
     // asynchronous
     process.nextTick(function() {
+      if (!req.user) {
+        // find the user in the database based on their facebook id
+        User.findOne({where: { facebookId : profile.id }}).success(function(user) {
+          if (user) {
+            return done(null, user); // user found, return that user
+          } else {
+            User
+              .create({
+                facebookEmail: profile.emails[0].value, // facebook can return multiple emails so we'll take the first
+                facebookName: profile.name.givenName + ' ' + profile.name.familyName,
+                facebookId: profile.id, // set the users facebook id
+                facebookToken: token // // we will save the token that facebook provides to the user
+              })
+              .complete(function(err, user) {
+                if (err)
+                  throw err;
+                return done(null, user);
+              })
+          }
+        });
+      } else {
+        // user already exists and is logged in, we have to link accounts
+        var user = req.user; // pull the user out of the session
 
-      // find the user in the database based on their facebook id
-      User.findOne({where: { facebookId : profile.id }}).success(function(user) {
-        if (user) {
-          return done(null, user); // user found, return that user
-        } else {
-          User
-            .create({
-              facebookEmail: profile.emails[0].value, // facebook can return multiple emails so we'll take the first
-              facebookName: profile.name.givenName + ' ' + profile.name.familyName,
-              facebookId: profile.id, // set the users facebook id
-              facebookToken: token // // we will save the token that facebook provides to the user
-            })
-            .complete(function(err, user) {
-              if (err)
-                throw err;
-              return done(null, user);
-            })
-        }
-      });
+        user
+          .updateAttributes({
+            facebookEmail: profile.emails[0].value, // facebook can return multiple emails so we'll take the first
+            facebookName: profile.name.givenName + ' ' + profile.name.familyName,
+            facebookId: profile.id, // set the users facebook id
+            facebookToken: token // // we will save the token that facebook provides to the user
+          })
+          .complete(function(err, user) {
+            if (err)
+              throw err;
+            return done(null, user);
+          })
+      }
     });
   }));
 
@@ -149,31 +183,50 @@ module.exports = function(passport) {
     clientID        : configAuth.googleAuth.clientID,
     clientSecret    : configAuth.googleAuth.clientSecret,
     callbackURL     : configAuth.googleAuth.callbackURL,
+    passReqToCallback : true // allows us to pass in the req from our route (lets us check if a user is logged in or not)
   },
-  function(token, refreshToken, profile, done) {
+  function(req, token, refreshToken, profile, done) {
     // make the code asynchronous
     // User.findOne won't fire until we have all our data back from Google
     process.nextTick(function() {
-      // try to find the user based on their google id
-      User.findOne({where: { googleId : profile.id }}).success(function(user) {
-        if (user) {
-          return done(null, user); // user found, return that user
-        } else {
-          // if the user isnt in our database, create a new user
-          User
-            .create({
-              googleEmail: profile.emails[0].value, // google can return multiple emails so we'll take the first
-              googleName: profile.displayName,
-              googleId: profile.id, // set the users google id
-              googleToken: token // we will save the token that google provides to the user
-            })
-            .complete(function(err, user) {
-              if (err)
-                throw err;
-              return done(null, user);
-            })
-        }
-      });
+      if (!req.user) {
+        // try to find the user based on their google id
+        User.findOne({where: { googleId : profile.id }}).success(function(user) {
+          if (user) {
+            return done(null, user); // user found, return that user
+          } else {
+            // if the user isnt in our database, create a new user
+            User
+              .create({
+                googleEmail: profile.emails[0].value, // google can return multiple emails so we'll take the first
+                googleName: profile.displayName,
+                googleId: profile.id, // set the users google id
+                googleToken: token // we will save the token that google provides to the user
+              })
+              .complete(function(err, user) {
+                if (err)
+                  throw err;
+                return done(null, user);
+              })
+          }
+        });
+      } else {
+        // user already exists and is logged in, we have to link accounts
+        var user = req.user; // pull the user out of the session
+
+        user
+          .updateAttributes({
+            googleEmail: profile.emails[0].value, // google can return multiple emails so we'll take the first
+            googleName: profile.displayName,
+            googleId: profile.id, // set the users google id
+            googleToken: token // we will save the token that google provides to the user
+          })
+          .complete(function(err, user) {
+            if (err)
+              throw err;
+            return done(null, user);
+          })
+      }
     });
   }));
 
@@ -183,31 +236,50 @@ module.exports = function(passport) {
   passport.use(new TwitterStrategy({
     consumerKey     : configAuth.twitterAuth.consumerKey,
     consumerSecret  : configAuth.twitterAuth.consumerSecret,
-    callbackURL     : configAuth.twitterAuth.callbackURL
+    callbackURL     : configAuth.twitterAuth.callbackURL,
+    passReqToCallback : true // allows us to pass in the req from our route (lets us check if a user is logged in or not)
   },
-  function(token, tokenSecret, profile, done) {
+  function(req, token, tokenSecret, profile, done) {
   // make the code asynchronous
   // User.findOne won't fire until we have all our data back from Twitter
     process.nextTick(function() {
-      User.findOne({where: { twitterId : profile.id }}).success(function(user) {
-        if (user) {
-          return done(null, user); // user found, return that user
-        } else {
-          // if the user isnt in our database, create a new user
-          User
-            .create({
-              twitterUsername: profile.username, // google can return multiple emails so we'll take the first
-              twitterDisplayName: profile.displayName,
-              twitterId: profile.id, // set the users google id
-              twitterToken: token // we will save the token that google provides to the user
-            })
-            .complete(function(err, user) {
-              if (err)
-                throw err;
-              return done(null, user);
-            })
-        }
-      });
+      if (!req.user) {
+        User.findOne({where: { twitterId : profile.id }}).success(function(user) {
+          if (user) {
+            return done(null, user); // user found, return that user
+          } else {
+            // if the user isnt in our database, create a new user
+            User
+              .create({
+                twitterUsername: profile.username, // google can return multiple emails so we'll take the first
+                twitterDisplayName: profile.displayName,
+                twitterId: profile.id, // set the users google id
+                twitterToken: token // we will save the token that google provides to the user
+              })
+              .complete(function(err, user) {
+                if (err)
+                  throw err;
+                return done(null, user);
+              })
+          }
+        });
+      } else {
+        // user already exists and is logged in, we have to link accounts
+        var user = req.user; // pull the user out of the session
+
+        user
+          .updateAttributes({
+            twitterUsername: profile.username, // google can return multiple emails so we'll take the first
+            twitterDisplayName: profile.displayName,
+            twitterId: profile.id, // set the users google id
+            twitterToken: token // we will save the token that google provides to the user
+          })
+          .complete(function(err, user) {
+            if (err)
+              throw err;
+            return done(null, user);
+          })
+      }
     });
   }));
 };
