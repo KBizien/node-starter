@@ -9,7 +9,7 @@ var models = require('../models');
 var User = models.sequelize.import('../../../models/user');
 
 // load the auth variables
-var configAuth = require('./auth');
+var configAuth = require('./env/'+ process.env.NODE_ENV + '.js');
 
 // expose this function to our app using module.exports
 module.exports = function(passport) {
