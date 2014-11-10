@@ -8,7 +8,7 @@
       <% } %>
 
       <!-- LOGIN FORM -->
-      <form action="/signup" method="post">
+      <form action="/users/signup" method="post">
         <div>
           <label>Usermail</label>
           <input type="email" name="email">
@@ -29,9 +29,9 @@
 
         <!-- <p>Already have an account? <a href="/login">Login</a></p> -->
         <p>Go <a href="/">home</a>.</p><br>
-        <a href="/login">Local Login</a><br>
-        <a href="/profile">Profile</a><br>
-        <a href="/logout">Logout</a>
+        <a href="/users/login">Local Login</a><br>
+        <a href="/users/profile">Profile</a><br>
+        <a href="/users/logout">Logout</a>
     </div>
   </div>
 <% include ../partials/footer %>

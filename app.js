@@ -14,6 +14,9 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
 
+var routes = require('./routes/index');
+var users = require('./routes/users');
+
 // =========================================
 // EXPRESS REQUIRED ========================
 // =========================================
@@ -46,7 +49,9 @@ app.use(flash());
 // =========================================
 // ROUTES ==================================
 // =========================================
-require('./routes/index.js')(app, passport);
+//require('./routes/index.js')(app, passport);
+app.use('/', routes);
+app.use('/users', users);
 
 // =========================================
 // VIEWS ===================================

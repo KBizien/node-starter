@@ -6,7 +6,7 @@
         <div><%= message %></div>
       <% } %>
       <!-- LOGIN FORM -->
-      <form action="/connect/local" method="post">
+      <form action="/users/connect/local" method="post">
         <div>
           <label>Email</label>
           <input type="email" name="email">
@@ -22,7 +22,7 @@
         <button type="submit">Add Local</button>
       </form>
       <hr>
-      <p><a href="/profile">Go back to profile</a></p>
+      <p><a href="/users/profile">Go back to profile</a></p>
     </div>
   </div>
 <% include ../partials/footer %>
