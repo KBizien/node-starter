@@ -2,7 +2,7 @@
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 
 // expose this function to our app using module.exports
-module.exports = function(passport, models, User, configAuth) {
+module.exports = function(passport, flash, models, User, configAuth) {
 
   // =========================================================================
   // GOOGLE SIGNUP/SIGNIN ====================================================
@@ -33,10 +33,10 @@ module.exports = function(passport, models, User, configAuth) {
                 .complete(function(err, user) {
                   if (err)
                     throw err;
-                  return done(null, user);
+                  return done(null, user, req.flash('success', 'Hello ' + user.googleName + ', your google account is now linked'));
                 })
             }
-            return done(null, user); // user found, return that user
+            return done(null, user, req.flash('success', 'Hello ' + user.googleName)); // user found, return that user
           } else {
             // if the user isnt in our database, create a new user
             User
@@ -49,7 +49,7 @@ module.exports = function(passport, models, User, configAuth) {
               .complete(function(err, user) {
                 if (err)
                   throw err;
-                return done(null, user);
+                return done(null, user, req.flash('success', 'Welcome ' + user.googleName));
               })
           }
         });
@@ -67,7 +67,7 @@ module.exports = function(passport, models, User, configAuth) {
           .complete(function(err, user) {
             if (err)
               throw err;
-            return done(null, user);
+            return done(null, user, req.flash('success', 'Your google account is now linked'));
           })
       }
     });

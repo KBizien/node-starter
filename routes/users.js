@@ -10,9 +10,7 @@ var userController = require('../controllers/user');
 router.route('/login')
   // show the login form
   .get(function(req, res) {
-    var error = req.flash('error');
-    console.log(error);
-    res.render('pages/login.ejs', { message: error });
+    res.render('pages/login.ejs', { message: req.flash('error') });
   })
   // process the login form
   .post(
@@ -32,14 +30,15 @@ router.route('/signup')
   // show the signup form
   .get(function(req, res) {
     // render the page and pass in any flash data if it exists
-    res.render('pages/signup.ejs', { message: req.flash('signupMessage') });
+    res.render('pages/signup.ejs', { message: req.flash('error') });
   })
   // process the signup form
   .post(
     passport.authenticate('local-signup', {
       successRedirect : '/users/profile',
       failureRedirect : '/users/signup',
-      failureFlash : true
+      failureFlash : true,
+      successFlash: true
     })
   );
 
@@ -59,7 +58,9 @@ router.route('/auth/facebook/callback')
   .get(
     passport.authenticate('facebook', {
       successRedirect : '/users/profile',
-      failureRedirect : '/'
+      failureRedirect : '/',
+      failureFlash : true,
+      successFlash: true
     })
   );
 
@@ -81,7 +82,9 @@ router.route('/auth/google/callback')
   .get(
     passport.authenticate('google', {
       successRedirect : '/users/profile',
-      failureRedirect : '/'
+      failureRedirect : '/',
+      failureFlash : true,
+      successFlash: true
     })
   );
 
@@ -99,7 +102,9 @@ router.route('/auth/twitter/callback')
   .get(
     passport.authenticate('twitter', {
       successRedirect : '/users/profile',
-      failureRedirect : '/'
+      failureRedirect : '/',
+      failureFlash : true,
+      successFlash: true
     })
   );
 
@@ -111,7 +116,7 @@ router.route('/auth/twitter/callback')
 router.route('/profile')
   .get(
     userController.isLoggedIn, function(req, res) {
-      res.render('pages/profile.ejs', { user : req.user }); // get the user out of session and pass to template
+      res.render('pages/profile.ejs', { user : req.user, message: req.flash('success') }); // get the user out of session and pass to template
     }
   );
 

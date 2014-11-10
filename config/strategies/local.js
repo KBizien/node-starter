@@ -3,7 +3,7 @@ var LocalStrategy   = require('passport-local').Strategy;
 var Sequelize = require("sequelize");
 
 // expose this function to our app using module.exports
-module.exports = function(passport, models, User) {
+module.exports = function(passport, flash, models, User) {
 
   // =========================================================================
   // LOCAL LOGIN =============================================================
@@ -27,7 +27,7 @@ module.exports = function(passport, models, User) {
           return done(null, false, req.flash('error', 'Invalid password'));
         } else {
           console.log('Welcome '+ user.username);
-          return done(null, user);
+          return done(null, user, req.flash('success', 'Hello '+ user.username));
         }
       }).error(function(err){
         return done(err);
@@ -69,7 +69,7 @@ module.exports = function(passport, models, User) {
                 .complete(function(err, user) {
                   if (err)
                     throw err;
-                  return done(null, user);
+                  return done(null, user, req.flash('success', 'Local account linked'));
                 })
             } else {
               // if there is no user with that email & username
@@ -83,7 +83,7 @@ module.exports = function(passport, models, User) {
                 .complete(function(err, user) {
                   if (err)
                     throw err;
-                  return done(null, user);
+                  return done(null, user, req.flash('success', 'Welcome '+ user.username));
                 })
             }
         });

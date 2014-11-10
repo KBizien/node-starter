@@ -2,6 +2,10 @@
   <div>
     <div>
       <h1>Profile Page</h1>
+      <!-- show any messages that come back with authentication -->
+      <% if (message.length > 0) { %>
+        <div><%= message %></div>
+      <% } %>
       <a href="/users/logout">Logout</a>
     </div>
 

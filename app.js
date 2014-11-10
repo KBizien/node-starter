@@ -31,7 +31,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // =========================================
 // BOOTSTRAP PASSPORT CONFIG ===============
 // =========================================
-require('./config/passport')(passport); // pass passport for configuration
+require('./config/passport')(passport, flash); // pass passport for configuration
 
 // =========================================
 // PASSPORT REQUIRED =======================

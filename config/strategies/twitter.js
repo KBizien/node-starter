@@ -2,7 +2,7 @@
 var TwitterStrategy  = require('passport-twitter').Strategy;
 
 // expose this function to our app using module.exports
-module.exports = function(passport, models, User, configAuth) {
+module.exports = function(passport, flash, models, User, configAuth) {
 
   // =========================================================================
   // TWITTER SIGNUP/SIGNIN ===================================================
@@ -32,10 +32,10 @@ module.exports = function(passport, models, User, configAuth) {
                 .complete(function(err, user) {
                   if (err)
                     throw err;
-                  return done(null, user);
+                  return done(null, user, req.flash('success', 'Hello ' + user.twitterUsername + ', your twitter account is now linked'));
                 })
             }
-            return done(null, user); // user found, return that user
+            return done(null, user, req.flash('success', 'Hello ' + user.twitterUsername)); // user found, return that user
           } else {
             // if the user isnt in our database, create a new user
             User
@@ -48,7 +48,7 @@ module.exports = function(passport, models, User, configAuth) {
               .complete(function(err, user) {
                 if (err)
                   throw err;
-                return done(null, user);
+                return done(null, user, req.flash('success', 'Welcome ' + user.twitterUsername));
               })
           }
         });
@@ -66,7 +66,7 @@ module.exports = function(passport, models, User, configAuth) {
           .complete(function(err, user) {
             if (err)
               throw err;
-            return done(null, user);
+            return done(null, user, req.flash('success', 'Your twitter account is now linked'));
           })
       }
     });

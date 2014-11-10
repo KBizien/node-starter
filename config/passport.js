@@ -6,7 +6,7 @@ var User = models.sequelize.import('../../../models/user');
 var configAuth = require('./env/'+ process.env.NODE_ENV + '.js');
 
 // expose this function to our app using module.exports
-module.exports = function(passport) {
+module.exports = function(passport, flash) {
 
   // =========================================================================
   // passport session setup ==================================================
@@ -31,20 +31,20 @@ module.exports = function(passport) {
   // =========================================
   // BOOTSTRAP PASSPORT LOCAL ===============
   // =========================================
-  require('./strategies/local')(passport, models, User);
+  require('./strategies/local')(passport, flash, models, User);
 
   // =========================================
   // BOOTSTRAP PASSPORT FACEBOOK ===============
   // =========================================
-  require('./strategies/facebook')(passport, models, User, configAuth);
+  require('./strategies/facebook')(passport, flash, models, User, configAuth);
 
   // =========================================
   // BOOTSTRAP PASSPORT GOOGLE ===============
   // =========================================
-  require('./strategies/google')(passport, models, User, configAuth);
+  require('./strategies/google')(passport, flash, models, User, configAuth);
 
   // =========================================
   // BOOTSTRAP PASSPORT TWITTER ===============
   // =========================================
-  require('./strategies/twitter')(passport, models, User, configAuth);
+  require('./strategies/twitter')(passport, flash, models, User, configAuth);
 };

@@ -2,7 +2,7 @@
 var FacebookStrategy = require('passport-facebook').Strategy;
 
 // expose this function to our app using module.exports
-module.exports = function(passport, models, User, configAuth) {
+module.exports = function(passport, flash, models, User, configAuth) {
   // =========================================================================
   // FACEBOOK SIGNUP/SIGNIN ============================================================
   // =========================================================================
@@ -36,10 +36,10 @@ module.exports = function(passport, models, User, configAuth) {
                 .complete(function(err, user) {
                   if (err)
                     throw err;
-                  return done(null, user);
+                  return done(null, user, req.flash('success', 'Hello ' + user.facebookName + ', your facebook account is now linked'));
                 })
             }
-            return done(null, user); // user found, return that user
+            return done(null, user, req.flash('success', 'Hello ' + user.facebookName)); // user found, return that user
           } else {
             User
               .create({
@@ -51,7 +51,7 @@ module.exports = function(passport, models, User, configAuth) {
               .complete(function(err, user) {
                 if (err)
                   throw err;
-                return done(null, user);
+                return done(null, user, req.flash('success', 'Welcome ' + user.facebookName));
               })
           }
         });
@@ -69,7 +69,7 @@ module.exports = function(passport, models, User, configAuth) {
           .complete(function(err, user) {
             if (err)
               throw err;
-            return done(null, user);
+            return done(null, user, req.flash('success', 'Your facebook account is now linked'));
           })
       }
     });
