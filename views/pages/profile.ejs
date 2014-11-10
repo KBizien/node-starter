@@ -50,9 +50,9 @@
               <strong>id</strong>: <%= user.googleId %><br>
               <strong>token</strong>: <%= user.googleToken %><br>
             </p>
-            <a href="/unlink/google" class="btn btn-danger">Unlink</a>
+            <a href="/unlink/google">Unlink</a>
           <% } else { %>
-            <a href="/connect/google" class="btn btn-danger">Connect Google</a>
+            <a href="/connect/google">Connect Google</a>
           <% } %>
         </div>
       </div>
@@ -63,7 +63,7 @@
           <% if (user.twitterToken) { %>
             <p>
               <strong>username</strong>: <%= user.twitterUsername %><br>
-              <strong>displayName</strong>: <%= user.twitterDisplayName %>
+              <strong>displayName</strong>: <%= user.twitterDisplayName %><br>
               <strong>id</strong>: <%= user.twitterId %><br>
               <strong>token</strong>: <%= user.twitterToken %><br>
             </p>

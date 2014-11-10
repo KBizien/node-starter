@@ -140,6 +140,21 @@ module.exports = function(passport) {
         // find the user in the database based on their facebook id
         User.findOne({where: { facebookId : profile.id }}).success(function(user) {
           if (user) {
+            // if there is a user id already but no token
+            // just add our token and profile information
+            if (!user.facebookToken) {
+              user
+                .updateAttributes({
+                  facebookEmail: profile.emails[0].value, // facebook can return multiple emails so we'll take the first
+                  facebookName: profile.name.givenName + ' ' + profile.name.familyName,
+                  facebookToken: token // // we will save the token that facebook provides to the user
+                })
+                .complete(function(err, user) {
+                  if (err)
+                    throw err;
+                  return done(null, user);
+                })
+            }
             return done(null, user); // user found, return that user
           } else {
             User
@@ -193,6 +208,21 @@ module.exports = function(passport) {
         // try to find the user based on their google id
         User.findOne({where: { googleId : profile.id }}).success(function(user) {
           if (user) {
+            // if there is a user id already but no token
+            // just add our token and profile information
+            if (!user.googleToken) {
+              user
+                .updateAttributes({
+                  googleEmail: profile.emails[0].value, // google can return multiple emails so we'll take the first
+                  googleName: profile.displayName,
+                  googleToken: token // we will save the token that google provides to the user
+                })
+                .complete(function(err, user) {
+                  if (err)
+                    throw err;
+                  return done(null, user);
+                })
+            }
             return done(null, user); // user found, return that user
           } else {
             // if the user isnt in our database, create a new user
@@ -246,6 +276,21 @@ module.exports = function(passport) {
       if (!req.user) {
         User.findOne({where: { twitterId : profile.id }}).success(function(user) {
           if (user) {
+            // if there is a user id already but no token
+            // just add our token and profile information
+            if (!user.twitterToken) {
+              user
+                .updateAttributes({
+                  twitterUsername: profile.username, // google can return multiple emails so we'll take the first
+                  twitterDisplayName: profile.displayName,
+                  twitterToken: token // we will save the token that google provides to the user
+                })
+                .complete(function(err, user) {
+                  if (err)
+                    throw err;
+                  return done(null, user);
+                })
+            }
             return done(null, user); // user found, return that user
           } else {
             // if the user isnt in our database, create a new user

@@ -149,6 +149,72 @@ module.exports = function(app, passport) {
         successRedirect : '/profile',
         failureRedirect : '/'
     }));
+
+  // =============================================================================
+  // UNLINK ACCOUNTS =============================================================
+  // =============================================================================
+  // used to unlink accounts. for social accounts, just remove the token
+  // for local account, remove email and password
+  // user account will stay active in case they want to reconnect in the future
+
+  // local -----------------------------------
+  app.get('/unlink/local', function(req, res) {
+    var user = req.user;
+    console.log(user);
+    user
+      .updateAttributes({
+        username: null,
+        email: null,
+        password: null
+      })
+      .complete(function(err, user) {
+        if (err)
+          throw err;
+        res.redirect('/profile');
+      })
+  });
+
+  // facebook -------------------------------
+  app.get('/unlink/facebook', function(req, res) {
+    var user = req.user;
+    user
+      .updateAttributes({
+        facebookToken: null,
+      })
+      .complete(function(err, user) {
+        if (err)
+          throw err;
+        res.redirect('/profile');
+      })
+  });
+
+  // twitter --------------------------------
+  app.get('/unlink/twitter', function(req, res) {
+    var user = req.user;
+    user
+      .updateAttributes({
+        twitterToken: null,
+      })
+      .complete(function(err, user) {
+        if (err)
+          throw err;
+        res.redirect('/profile');
+      })
+  });
+
+  // google ---------------------------------
+  app.get('/unlink/google', function(req, res) {
+    var user = req.user;
+    user
+      .updateAttributes({
+        googleToken: null,
+      })
+      .complete(function(err, user) {
+        if (err)
+          throw err;
+        res.redirect('/profile');
+      })
+  });
 };
 
 //route middleware to make sure a user is logged in
