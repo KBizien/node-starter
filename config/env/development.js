@@ -1,24 +1,24 @@
 module.exports = {
   db: {
-    username: "root",
-    password: null,
-    database: "andzup",
-    host: "127.0.0.1",
-    dialect: "mysql"
+    username: "root", // your database username
+    password: null, // your database password
+    database: "database_development", // your database name
+    host: "127.0.0.1", // your database host
+    dialect: "mysql" // or pgsql, sqlite, mariaDB…
   },
   facebookAuth : {
-    clientID      : '870146696350650',
-    clientSecret  : '01ba3739436ab62e65d8b4029647b7f4',
-    callbackURL   : 'http://localhost:3000/users/auth/facebook/callback'
+    clientID      : 'your_client_id',
+    clientSecret  : 'your_client_secret',
+    callbackURL   : 'your_callback_url'
   },
   twitterAuth : {
-    consumerKey       : 'XzIx2w5odJgu8n7sBuNvmDBCY',
-    consumerSecret    : 'OnDLzZO5q3HwVOLkUS11NgbWu1ymvFq0bN1zqmetJ6pjMrKV4c',
-    callbackURL       : 'http://127.0.0.1:3000/users/auth/twitter/callback'
+    consumerKey       : 'your_consumer_key',
+    consumerSecret    : 'your_consumer_secret',
+    callbackURL       : 'your_callback_url'
   },
   googleAuth : {
-    clientID      : '652771640981-jgooj48ua83i7rj68uhqc67bplqov35o.apps.googleusercontent.com',
-    clientSecret  : '9sJaFbbR9I5A8T0hAA4MnG4N',
-    callbackURL   : 'http://localhost:3000/users/auth/google/callback'
+    clientID      : 'your_client_id',
+    clientSecret  : 'your_client_secret',
+    callbackURL   : 'your_callback_url'
   }
 }

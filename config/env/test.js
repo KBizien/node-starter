@@ -1,10 +1,10 @@
 module.exports = {
   db: {
-    username: "root",
-    password: null,
-    database: "andzup",
-    host: "127.0.0.1",
-    dialect: "mysql"
+    username: "root", // your database username
+    password: null, // your database password
+    database: "database_development", // your database name
+    host: "127.0.0.1", // your database host
+    dialect: "mysql" // or pgsql, sqlite, mariaDB…
   },
   facebookAuth : {
     clientID      : 'your_client_id',
