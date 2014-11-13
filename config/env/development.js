@@ -6,6 +6,12 @@ module.exports = {
     host: "127.0.0.1", // your database host
     dialect: "mysql" // or pgsql, sqlite, mariaDB…
   },
+  mail: {
+    service: "your_service", // your email service (ex: Gmail)
+    user_mail: "your_user_mail", // your email user for password reset
+    pass_mail: "your_password_mail", // your pwd user for password reset
+    from_mail: "your_from_mail" // "from" on email send to users
+  },
   facebookAuth : {
     clientID      : 'your_client_id',
     clientSecret  : 'your_client_secret',
