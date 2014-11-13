@@ -43,6 +43,23 @@ router.route('/signup')
   );
 
 // =====================================
+// RESET PASSWORD ======================
+// =====================================
+router.route('/forgot')
+  .get(function(req, res) {
+    res.render('pages/forgot.ejs', {
+      user: req.user,
+      message: req.flash('info')
+    });
+  })
+  .post(userController.resetPassword);
+
+
+router.route('/reset/:token')
+  .get(userController.matchToken)
+  .post(userController.updatePassword);
+
+// =====================================
 // FACEBOOK ROUTES =====================
 // =====================================
 // route for facebook authentication and login
