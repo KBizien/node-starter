@@ -150,18 +150,22 @@ exports.updatePassword = function(req, res) {
           req.flash('info', 'Password reset token is invalid or has expired.');
           return res.render('pages/reset.ejs', { message: req.flash('info') });
         }
-
-        user
-          .updateAttributes({
-            password: User.build().generateHash(req.body.password),
-            resetPasswordToken: null,
-            resetPasswordExpires: null
-          })
-          .complete(function(err, user) {
-            if (err)
-              throw err;
-            done(err, user);
-          })
+        if (req.body.password == req.body.confirm) {
+          user
+            .updateAttributes({
+              password: User.build().generateHash(req.body.password),
+              resetPasswordToken: null,
+              resetPasswordExpires: null
+            })
+            .complete(function(err, user) {
+              if (err)
+                throw err;
+              done(err, user);
+            })
+        } else {
+          req.flash('info', 'Password & Password confirm are different. Please retry.');
+          return res.render('pages/reset.ejs', { message: req.flash('info') });
+        }
       });
     },
     function(user, done) {
@@ -175,7 +179,7 @@ exports.updatePassword = function(req, res) {
       var mailOptions = {
         from: 'from_email',
         to: user.email,
-        subject: 'Your password has been changed',
+        subject: 'Node-Starter - Your password has been changed',
         text: 'Hello,\n\n' +
           'This is a confirmation that the password for your account ' + user.email + ' has just been changed.\n'
       };
