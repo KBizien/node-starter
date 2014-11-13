@@ -19,7 +19,9 @@ module.exports = function(sequelize, DataTypes) {
     googleId: DataTypes.INTEGER,
     googleToken: DataTypes.STRING,
     googleEmail: DataTypes.STRING,
-    googleName: DataTypes.STRING
+    googleName: DataTypes.STRING,
+    resetPasswordToken: DataTypes.STRING,
+    resetPasswordExpires: DataTypes.DATE
   }, {
     classMethods: {
       associate: function(models) {

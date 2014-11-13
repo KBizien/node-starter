@@ -55,6 +55,12 @@ module.exports = {
       twitterUsername: {
         type: DataTypes.STRING
       },
+      resetPasswordToken: {
+        type: DataTypes.STRING
+      },
+      resetPasswordExpires: {
+        type: DataTypes.DATE
+      },
       createdAt: {
         allowNull: false,
         type: DataTypes.DATE
