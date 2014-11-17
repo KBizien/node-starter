@@ -3,9 +3,11 @@
 var fs        = require("fs");
 var path      = require("path");
 var Sequelize = require("sequelize");
-var env       = process.env.NODE_ENV = process.env.NODE_ENV || "development";
-var config    = require(__dirname + '/../config/env/'+ env + '.js');
-var sequelize = new Sequelize(config.db.database, config.db.username, config.db.password, config);
+var sequelize = new Sequelize(process.env.DB_DATABASE, process.env.DB_USERNAME, process.env.DB_PASSWORD, {
+  dialect: process.env.DB_DIALECT,
+  port: process.env.DB_PORT,
+  host: process.env.DB_HOST
+});
 var db        = {};
 
 fs

@@ -2,16 +2,16 @@
 var FacebookStrategy = require('passport-facebook').Strategy;
 
 // expose this function to our app using module.exports
-module.exports = function(passport, flash, models, User, configAuth) {
+module.exports = function(passport, flash, models, User) {
   // =========================================================================
   // FACEBOOK SIGNUP/SIGNIN ============================================================
   // =========================================================================
 
   passport.use(new FacebookStrategy({
     // pull in our app id and secret from our auth.js file
-    clientID        : configAuth.facebookAuth.clientID,
-    clientSecret    : configAuth.facebookAuth.clientSecret,
-    callbackURL     : configAuth.facebookAuth.callbackURL,
+    clientID        : process.env.FACEBOOK_AUTH_CLIENT_ID,
+    clientSecret    : process.env.FACEBOOK_AUTH_CLIENT_SECRET,
+    callbackURL     : process.env.FACEBOOK_AUTH_CALLBACK_URL,
     passReqToCallback : true // allows us to pass in the req from our route (lets us check if a user is logged in or not)
   },
 

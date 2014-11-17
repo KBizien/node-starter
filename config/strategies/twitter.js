@@ -2,15 +2,15 @@
 var TwitterStrategy  = require('passport-twitter').Strategy;
 
 // expose this function to our app using module.exports
-module.exports = function(passport, flash, models, User, configAuth) {
+module.exports = function(passport, flash, models, User) {
 
   // =========================================================================
   // TWITTER SIGNUP/SIGNIN ===================================================
   // =========================================================================
   passport.use(new TwitterStrategy({
-    consumerKey     : configAuth.twitterAuth.consumerKey,
-    consumerSecret  : configAuth.twitterAuth.consumerSecret,
-    callbackURL     : configAuth.twitterAuth.callbackURL,
+    consumerKey     : process.env.TWITTER_AUTH_CONSUMER_KEY,
+    consumerSecret  : process.env.TWITTER_AUTH_CONSUMER_SECRET,
+    callbackURL     : process.env.TWITTER_AUTH_CALLBACK_URL,
     passReqToCallback : true // allows us to pass in the req from our route (lets us check if a user is logged in or not)
   },
   function(req, token, tokenSecret, profile, done) {

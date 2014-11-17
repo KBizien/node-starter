@@ -2,15 +2,15 @@
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 
 // expose this function to our app using module.exports
-module.exports = function(passport, flash, models, User, configAuth) {
+module.exports = function(passport, flash, models, User) {
 
   // =========================================================================
   // GOOGLE SIGNUP/SIGNIN ====================================================
   // =========================================================================
   passport.use(new GoogleStrategy({
-    clientID        : configAuth.googleAuth.clientID,
-    clientSecret    : configAuth.googleAuth.clientSecret,
-    callbackURL     : configAuth.googleAuth.callbackURL,
+    clientID        : process.env.GOOGLE_AUTH_CLIENT_ID,
+    clientSecret    : process.env.GOOGLE_AUTH_CLIENT_SECRET,
+    callbackURL     : process.env.GOOGLE_AUTH_CALLBACK_URL,
     passReqToCallback : true // allows us to pass in the req from our route (lets us check if a user is logged in or not)
   },
   function(req, token, refreshToken, profile, done) {

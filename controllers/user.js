@@ -5,8 +5,6 @@ var crypto = require('crypto');
 var Sequelize = require("sequelize");
 var models = require('../models');
 var User = models.sequelize.import('../../../models/user');
-// load config
-var config = require('../config/env/'+ process.env.NODE_ENV + '.js');
 
 //route middleware to make sure a user is logged in
 exports.isLoggedIn = function(req, res, next) {
@@ -105,14 +103,14 @@ exports.resetPassword = function(req, res) {
     },
     function(token, user, done) {
       var smtpTransport = nodemailer.createTransport({
-        service: config.mail.service,
+        service: process.env.MAIL_SERVICE,
         auth: {
-          user: config.mail.user_mail,
-          pass: config.mail.pass_mail
+          user: process.env.MAIL_USER,
+          pass: process.env.MAIL_PASSWORD
         }
       });
       var mailOptions = {
-        from: config.mail.from_mail,
+        from: process.env.MAIL_FROM,
         to: user.email,
         subject: 'Node Starter App Password Reset',
         text: 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
@@ -172,14 +170,14 @@ exports.updatePassword = function(req, res) {
     },
     function(user, done) {
       var smtpTransport = nodemailer.createTransport({
-        service: config.mail.service,
+        service: process.env.MAIL_SERVICE,
         auth: {
-          user: config.mail.user_mail,
-          pass: config.mail.pass_mail
+          user: process.env.MAIL_USER,
+          pass: process.env.MAIL_PASSWORD
         }
       });
       var mailOptions = {
-        from: config.mail.from_mail,
+        from: process.env.MAIL_FROM,
         to: user.email,
         subject: 'Node-Starter - Your password has been changed',
         text: 'Hello,\n\n' +
