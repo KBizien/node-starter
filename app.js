@@ -8,6 +8,9 @@ var path = require('path');
 var passport = require('passport');
 var flash = require('connect-flash');
 
+var dotenv = require('dotenv');
+dotenv.load();
+
 var logger = require('morgan');
 var favicon = require('serve-favicon');
 var cookieParser = require('cookie-parser');
