@@ -133,6 +133,9 @@ router.route('/auth/twitter/callback')
 router.route('/profile')
   .get(userController.isLoggedIn, function(req, res) {
     res.render('pages/profile.ejs', { user : req.user, message: req.flash('info') }); // get the user out of session and pass to template
+  })
+  .post(userController.changePassword, function(req, res){
+    res.render('pages/profile.ejs', { user: req.user, message: req.flash('info') });
   });
 
 // =====================================

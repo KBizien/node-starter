@@ -192,3 +192,25 @@ exports.updatePassword = function(req, res) {
     res.render('pages/index.ejs', { message: req.flash('info') });
   });
 };
+
+// change password
+exports.changePassword = function(req, res, done) {
+  var user = req.user;
+  if (User.build().validPassword(req.body.password, user)) {
+    if (req.body.newpassword == req.body.confirm) {
+      user
+        .updateAttributes({
+          password: User.build().generateHash(req.body.newpassword)
+        })
+        .complete(function(err, user) {
+          if (err)
+            throw err;
+          return done(null, user, req.flash('info', 'Success! Your password has been changed.'));
+        })
+    } else {
+      return done(null, false, user, req.flash('info', 'Password & Password confirm are different. Please retry.'));
+    }
+  } else {
+    return done(null, false, user, req.flash('info', 'This is not your actual password, please retry.'));
+  }
+}

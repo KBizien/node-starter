@@ -20,6 +20,23 @@
               <strong>email</strong>: <%= user.email %><br>
               <strong>password</strong>: <%= user.password %>
             </p>
+
+            <form action="/users/profile" method="post">
+              <div>
+                <label>Actual password</label>
+                <input type="password" name="password">
+              </div>
+              <div>
+                <label>New password</label>
+                <input type="password" name="newpassword">
+              </div>
+              <div>
+                <label>Confirm new password</label>
+                <input type="password" name="confirm">
+              </div>
+              <button type="submit">Update Password</button>
+            </form>
+
             <a href="/users/unlink/local">Unlink</a>
           <% } else { %>
             <a href="/users/connect/local">Connect Local</a>
