@@ -10,7 +10,7 @@ var userController = require('../controllers/user');
 router.route('/login')
   // show the login form
   .get(function(req, res) {
-    res.render('pages/login.ejs', { message: req.flash('error') });
+    res.render('pages/login.ejs', { message: req.flash('info') });
   })
   // process the login form
   .post(
@@ -30,7 +30,7 @@ router.route('/signup')
   // show the signup form
   .get(function(req, res) {
     // render the page and pass in any flash data if it exists
-    res.render('pages/signup.ejs', { message: req.flash('error') });
+    res.render('pages/signup.ejs', { message: req.flash('info') });
   })
   // process the signup form
   .post(
@@ -131,11 +131,9 @@ router.route('/auth/twitter/callback')
 // we will want this protected so you have to be logged in to visit
 // we will use route middleware to verify this (the isLoggedIn function)
 router.route('/profile')
-  .get(
-    userController.isLoggedIn, function(req, res) {
-      res.render('pages/profile.ejs', { user : req.user, message: req.flash('success') }); // get the user out of session and pass to template
-    }
-  );
+  .get(userController.isLoggedIn, function(req, res) {
+    res.render('pages/profile.ejs', { user : req.user, message: req.flash('info') }); // get the user out of session and pass to template
+  });
 
 // =====================================
 // LOGOUT ==============================
@@ -156,7 +154,7 @@ router.route('/logout')
 router.route('/connect/local')
   .get(
     function(req, res) {
-      res.render('pages/connect-local.ejs', { message: req.flash('loginMessage') });
+      res.render('pages/connect-local.ejs', { message: req.flash('info') });
     }
   )
   .post(

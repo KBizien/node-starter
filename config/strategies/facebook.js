@@ -36,10 +36,10 @@ module.exports = function(passport, flash, models, User) {
                 .complete(function(err, user) {
                   if (err)
                     throw err;
-                  return done(null, user, req.flash('success', 'Hello ' + user.facebookName + ', your facebook account is now linked'));
+                  return done(null, user, req.flash('info', 'Hello ' + user.facebookName + ', your facebook account is now linked'));
                 })
             }
-            return done(null, user, req.flash('success', 'Hello ' + user.facebookName)); // user found, return that user
+            return done(null, user, req.flash('info', 'Hello ' + user.facebookName)); // user found, return that user
           } else {
             User
               .create({
@@ -51,7 +51,7 @@ module.exports = function(passport, flash, models, User) {
               .complete(function(err, user) {
                 if (err)
                   throw err;
-                return done(null, user, req.flash('success', 'Welcome ' + user.facebookName));
+                return done(null, user, req.flash('info', 'Welcome ' + user.facebookName));
               })
           }
         });
@@ -69,7 +69,7 @@ module.exports = function(passport, flash, models, User) {
           .complete(function(err, user) {
             if (err)
               throw err;
-            return done(null, user, req.flash('success', 'Your facebook account is now linked'));
+            return done(null, user, req.flash('info', 'Your facebook account is now linked'));
           })
       }
     });

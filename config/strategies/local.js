@@ -21,13 +21,13 @@ module.exports = function(passport, flash, models, User) {
       User.findOne({ where: { username: username }}).success(function(user) {
         if (!user) {
           console.log('Unknown user');
-          return done(null, false, req.flash('error', 'Unknown user'));
+          return done(null, false, req.flash('info', 'Unknown user'));
         } else if (!User.build().validPassword(password, user)) {
           console.log('Invalid password');
-          return done(null, false, req.flash('error', 'Invalid password'));
+          return done(null, false, req.flash('info', 'Invalid password'));
         } else {
           console.log('Welcome '+ user.username);
-          return done(null, user, req.flash('success', 'Hello '+ user.username));
+          return done(null, user, req.flash('info', 'Hello '+ user.username));
         }
       }).error(function(err){
         return done(err);
@@ -54,7 +54,7 @@ module.exports = function(passport, flash, models, User) {
             // check to see if theres already a user with that email
             if (existingUser) {
                 console.log('That email or username have already an account');
-                return done(null, false, req.flash('error', 'That email or username have already an account'));
+                return done(null, false, req.flash('info', 'That email or username have already an account'));
             }
 
             // If we're logged in, we're connecting a new local account.
@@ -69,7 +69,7 @@ module.exports = function(passport, flash, models, User) {
                 .complete(function(err, user) {
                   if (err)
                     throw err;
-                  return done(null, user, req.flash('success', 'Local account linked'));
+                  return done(null, user, req.flash('info', 'Local account linked'));
                 })
             } else {
               // if there is no user with that email & username
@@ -83,7 +83,7 @@ module.exports = function(passport, flash, models, User) {
                 .complete(function(err, user) {
                   if (err)
                     throw err;
-                  return done(null, user, req.flash('success', 'Welcome '+ user.username));
+                  return done(null, user, req.flash('info', 'Welcome '+ user.username));
                 })
             }
         });
