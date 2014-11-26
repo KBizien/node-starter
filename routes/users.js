@@ -139,6 +139,14 @@ router.route('/profile')
   });
 
 // =====================================
+// DELETE ==============================
+// =====================================
+router.route('/delete')
+  .get(userController.deleteAccount, function(req, res) {
+    res.render('pages/index.ejs', { message: req.flash('info') });
+  });
+
+// =====================================
 // LOGOUT ==============================
 // =====================================
 router.route('/logout')

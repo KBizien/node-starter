@@ -214,3 +214,14 @@ exports.changePassword = function(req, res, done) {
     return done(null, false, user, req.flash('info', 'This is not your actual password, please retry.'));
   }
 }
+
+// delete user
+exports.deleteAccount = function(req, res, done) {
+  var user = req.user;
+  user.destroy().success(function(err){
+    if (err) {
+      console.log(err);
+    }
+    return done(null, false, req.flash('info', 'Your account is delete !'));
+  })
+}
