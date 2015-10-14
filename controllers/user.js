@@ -1,13 +1,15 @@
+// Modules
 var nodemailer = require('nodemailer');
 var async = require('async');
 var crypto = require('crypto');
-// load up the user model
-var Sequelize = require("sequelize");
-var models = require('../models');
-var User = models.sequelize.import('../../../models/user');
 
-//route middleware to make sure a user is logged in
-exports.isLoggedIn = function(req, res, next) {
+// Models
+var models = require('../models');
+
+//// ===============================================
+// Route middleware to make sure a user is logged in
+// =================================================
+exports.isLoggedIn = function (req, res, next) {
   // if user is authenticated in the session, carry on
   if (req.isAuthenticated())
     return next();
@@ -15,93 +17,84 @@ exports.isLoggedIn = function(req, res, next) {
   res.redirect('/');
 };
 
+//// ===============================================
+// Unlink accounts
+// =================================================
+
 // unlink local method - remove email, username & password
-exports.unlinkLocal = function(req, res) {
+exports.unlinkLocal = function (req, res) {
   var user = req.user;
-  user
-    .updateAttributes({
-      username: null,
-      email: null,
-      password: null
-    })
-    .complete(function(err, user) {
-      if (err)
-        throw err;
-      res.redirect('/users/profile');
-    })
+  user.updateLoginInfos(null, null, null).then(function (user) {
+    res.redirect('/users/profile');
+  }).catch(function (err) {
+    console.log('ERR unlink local : ', err);
+    return err;
+  });
 };
 
 // unlink facebook method - remove token
-exports.unlinkFacebook = function(req, res) {
+exports.unlinkFacebook = function (req, res) {
   var user = req.user;
-  user
-    .updateAttributes({
-      facebookToken: null,
-    })
-    .complete(function(err, user) {
-      if (err)
-        throw err;
-      res.redirect('/users/profile');
-    })
+  user.updateFacebookInfos(null, null, null, null).then(function (user) {
+    res.redirect('/users/profile');
+  }).catch(function (err) {
+    console.log('ERR unlink Facebook : ', err);
+    return err;
+  });
 };
 
 // unlink google method - remove token
-exports.unlinkGoogle = function(req, res) {
+exports.unlinkGoogle = function (req, res) {
   var user = req.user;
-  user
-    .updateAttributes({
-      googleToken: null,
-    })
-    .complete(function(err, user) {
-      if (err)
-        throw err;
-      res.redirect('/users/profile');
-    })
+  user.updateGoogleInfos(null, null, null, null).then(function (user) {
+    res.redirect('/users/profile');
+  }).catch(function (err) {
+    console.log('ERR unlink google : ', err);
+    return err;
+  });
 };
 
 // unlink twitter method - remove token
 exports.unlinkTwitter = function(req, res) {
   var user = req.user;
-  user
-    .updateAttributes({
-      twitterToken: null,
-    })
-    .complete(function(err, user) {
-      if (err)
-        throw err;
-      res.redirect('/users/profile');
-    })
+  user.updateTwitterInfos(null, null, null, null).then(function (user) {
+    res.redirect('/users/profile');
+  }).catch(function (err) {
+    console.log('ERR unlink Twitter : ', err);
+    return err;
+  });
 };
 
+//// ===============================================
 // Reset password - SendMail
-exports.resetPassword = function(req, res) {
+// =================================================
+exports.resetPassword = function (req, res) {
   async.waterfall([
-    function(done) {
-      crypto.randomBytes(20, function(err, buf) {
+    function (callback) {
+      crypto.randomBytes(20, function (err, buf) {
         var token = buf.toString('hex');
-        done(err, token);
+        callback(null, token);
       });
     },
-    function(token, done) {
-      User.findOne({where: { email: req.body.email }}).success(function(user) {
+    function (token, callback) {
+      models.User.findEmail(req.body.email).then(function (user) {
         if (!user) {
           req.flash('info', 'No account with that email address exists.');
           return res.render('pages/forgot', { message: req.flash('info') });
+        } else {
+          user.forgotPassword(token).then(function (user) {
+            callback(null, token, user);
+          }).catch(function (err) {
+            console.log('ERR forgotPassword : ', err);
+            return err;
+          });
         }
-
-        user
-          .updateAttributes({
-            resetPasswordToken: token,
-            resetPasswordExpires: Date.now() + 3600000 // 1 hour
-          })
-          .complete(function(err, user) {
-            if (err)
-              throw err;
-            done(err, token, user);
-          })
+      }).catch(function (err) {
+        console.log('ERR findEmail : ', err);
+        return err;
       });
     },
-    function(token, user, done) {
+    function (token, user, callback) {
       var smtpTransport = nodemailer.createTransport({
         service: process.env.MAIL_SERVICE,
         auth: {
@@ -118,57 +111,58 @@ exports.resetPassword = function(req, res) {
           'http://' + req.headers.host + '/users/reset/' + token + '\n\n' +
           'If you did not request this, please ignore this email and your password will remain unchanged.\n'
       };
-      smtpTransport.sendMail(mailOptions, function(err) {
+      smtpTransport.sendMail(mailOptions, function (err) {
         req.flash('info', 'An e-mail has been sent to ' + user.email + ' with further instructions.');
-        done(err, 'done');
+        callback(null, 'done');
       });
     }
-  ], function(err) {
-    if (err)
+  ], function (err, result) {
+    if (err) {
       throw err;
-    res.render('pages/forgot.ejs', { message: req.flash('info') });
+    } else {
+      res.render('pages/forgot.ejs', { message: req.flash('info') });
+    }
   });
 };
 
-// Reset password - Match token
-exports.matchToken = function(req, res) {
-  User.findOne({where: Sequelize.and({ resetPasswordToken: req.params.token }, { resetPasswordExpires: { gt: Date.now() }} ) }).success(function(user) {
+exports.matchToken = function (req, res) {
+  models.User.matchToken(req.params.token).then(function (user) {
     if (!user) {
       req.flash('info', 'Password reset token is invalid or has expired.');
       return res.render('pages/forgot', { message: req.flash('info') });
+    } else {
+      res.render('pages/reset.ejs', { user: req.user, message: req.flash('info') });
     }
-    res.render('pages/reset.ejs', { user: req.user, message: req.flash('info') });
+  }).catch(function (err) {
+    console.log('ERR find user token : ', err);
+    return err;
   });
 };
 
-// Update Password
-exports.updatePassword = function(req, res) {
+exports.updatePassword = function (req, res) {
   async.waterfall([
-    function(done) {
-      User.findOne({ where: Sequelize.and({ resetPasswordToken: req.params.token }, { resetPasswordExpires: { gt: Date.now() }})}).success(function(user) {
+    function (callback) {
+      models.User.matchToken(req.params.token).then(function (user) {
         if (!user) {
           req.flash('info', 'Password reset token is invalid or has expired.');
           return res.render('pages/reset.ejs', { message: req.flash('info') });
-        }
-        if (req.body.password == req.body.confirm) {
-          user
-            .updateAttributes({
-              password: User.build().generateHash(req.body.password),
-              resetPasswordToken: null,
-              resetPasswordExpires: null
-            })
-            .complete(function(err, user) {
-              if (err)
-                throw err;
-              done(err, user);
-            })
         } else {
-          req.flash('info', 'Password & Password confirm are different. Please retry.');
-          return res.render('pages/reset.ejs', { message: req.flash('info') });
+          if (req.body.password == req.body.confirm) {
+            user.updatePassword(req.body.password).then(function (user) {
+              callback(null, user);
+            }).catch(function (err) {
+              console.log('ERR update forgot password : ', err);
+              return err;
+            });
+
+          } else {
+            req.flash('info', 'Password & Password confirm are different. Please retry.');
+            return res.render('pages/reset.ejs', { message: req.flash('info') });
+          }
         }
       });
     },
-    function(user, done) {
+    function (user, callback) {
       var smtpTransport = nodemailer.createTransport({
         service: process.env.MAIL_SERVICE,
         auth: {
@@ -185,28 +179,31 @@ exports.updatePassword = function(req, res) {
       };
       smtpTransport.sendMail(mailOptions, function(err) {
         req.flash('info', 'Success! Your password has been changed.');
-        done(err);
+        callback(null, 'done');
       });
     }
-  ], function(err) {
-    res.render('pages/index.ejs', { message: req.flash('info') });
+  ], function (err, result) {
+    if (err) {
+      throw err;
+    } else {
+      res.render('pages/index.ejs', { message: req.flash('info') });
+    }
   });
 };
 
-// change password
-exports.changePassword = function(req, res, done) {
+//// ===============================================
+// Change password
+// =================================================
+exports.changePassword = function (req, res, done) {
   var user = req.user;
-  if (User.build().validPassword(req.body.password, user)) {
+  if (user.validPassword(req.body.password)) {
     if (req.body.newpassword == req.body.confirm) {
-      user
-        .updateAttributes({
-          password: User.build().generateHash(req.body.newpassword)
-        })
-        .complete(function(err, user) {
-          if (err)
-            throw err;
-          return done(null, user, req.flash('info', 'Success! Your password has been changed.'));
-        })
+      user.updatePassword(req.body.newpassword).then(function (user) {
+        return done(null, user, req.flash('info', 'Success! Your password has been changed.'));
+      }).catch(function (err) {
+        console.log('ERR update password : ', err);
+        return err;
+      });
     } else {
       return done(null, false, user, req.flash('info', 'Password & Password confirm are different. Please retry.'));
     }
@@ -215,13 +212,15 @@ exports.changePassword = function(req, res, done) {
   }
 }
 
-// delete user
-exports.deleteAccount = function(req, res, done) {
+//// ===============================================
+// Delete user
+// =================================================
+exports.deleteAccount = function (req, res, done) {
   var user = req.user;
-  user.destroy().success(function(err){
-    if (err) {
-      console.log(err);
-    }
+  user.destroyOne().then(function (user) {
     return done(null, false, req.flash('info', 'Your account is delete !'));
-  })
+  }).catch(function (err) {
+    console.log('ERR deleteAccount : ', err);
+    return err;
+  });
 }

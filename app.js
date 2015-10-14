@@ -3,13 +3,14 @@
 // =========================================
 var express = require('express');
 var app = express();
-var init = require('./bin/www'); // contains database configuation with orm sequelize.js
 var path = require('path');
 var passport = require('passport');
 var flash = require('connect-flash');
 
 var dotenv = require('dotenv');
 dotenv.load();
+
+var cors = require('cors');
 
 var logger = require('morgan');
 var favicon = require('serve-favicon');
@@ -25,6 +26,7 @@ var users = require('./routes/users');
 // =========================================
 // uncomment after placing your favicon in /public
 //app.use(favicon(__dirname + '/public/favicon.ico'));
+app.use(cors());
 app.use(logger('dev'));
 app.use(cookieParser());
 app.use(bodyParser.json());
@@ -52,7 +54,6 @@ app.use(flash());
 // =========================================
 // ROUTES ==================================
 // =========================================
-//require('./routes/index.js')(app, passport);
 app.use('/', routes);
 app.use('/users', users);
 
@@ -66,10 +67,10 @@ app.set('view engine', 'ejs'); // set up ejs for templating
 // 404 & ERROR =============================
 // =========================================
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
-    var err = new Error('Not Found');
-    err.status = 404;
-    next(err);
+app.use(function (req, res, next) {
+  var err = new Error('Not Found');
+  err.status = 404;
+  next(err);
 });
 
 // error handlers
@@ -77,23 +78,23 @@ app.use(function(req, res, next) {
 // development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {
-    app.use(function(err, req, res, next) {
-        res.status(err.status || 500);
-        res.render('error', {
-            message: err.message,
-            error: err
-        });
+  app.use(function (err, req, res, next) {
+    res.status(err.status || 500);
+    res.render('error', {
+      message: err.message,
+      error: err
     });
+  });
 }
 
 // production error handler
 // no stacktraces leaked to user
-app.use(function(err, req, res, next) {
-    res.status(err.status || 500);
-    res.render('error', {
-        message: err.message,
-        error: {}
-    });
+app.use(function (err, req, res, next) {
+  res.status(err.status || 500);
+  res.render('error', {
+    message: err.message,
+    error: {}
+  });
 });
 
 module.exports = app;

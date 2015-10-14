@@ -1,6 +1,6 @@
 "use strict";
 module.exports = {
-  up: function(migration, DataTypes, done) {
+  up: function(migration, DataTypes) {
     migration.createTable("Users", {
       id: {
         allowNull: false,
@@ -69,9 +69,9 @@ module.exports = {
         allowNull: false,
         type: DataTypes.DATE
       }
-    }).done(done);
+    });
   },
-  down: function(migration, DataTypes, done) {
-    migration.dropTable("Users").done(done);
+  down: function(migration, DataTypes) {
+    migration.dropTable("Users");
   }
 };
